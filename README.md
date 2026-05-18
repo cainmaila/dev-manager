@@ -2,7 +2,7 @@
 
 Workflow-first software delivery skills for development agents.
 
-Traditional Chinese version: [README.zh-TW.md](README.zh-TW.md)
+中文版：[README.zh-TW.md](README.zh-TW.md)
 
 Repository: https://github.com/cainmaila/dev-manager
 
