@@ -28,6 +28,53 @@ npx skills add https://github.com/cainmaila/dev-manager
 npx skills add cainmaila/dev-manager -g
 ```
 
+## Example: Start from a product wish
+
+Dev Manager is meant to be useful before you have a full spec.
+
+You can start with a rough wish like this in your agent chat:
+
+```text
+I want to build a small internal tool that turns meeting notes into action items, assigns owners, and sends a daily summary to Slack.
+Use Dev Manager to take this from requirements to implementation.
+```
+
+What happens next:
+
+1. Dev Manager starts by clarifying requirements and acceptance criteria
+2. It turns those answers into a saved requirements document
+3. It uses the planner skills to create a spec, task breakdown, and execution plan
+4. It dispatches focused implementation work through isolated task agents
+5. It verifies reviews, integration, and runtime behavior before claiming completion
+
+A typical early interaction looks like this:
+
+```text
+You: I want to build a small internal tool that turns meeting notes into action items.
+
+Agent: Who will use it first: only your team, multiple departments, or external customers?
+
+You: Only my team.
+
+Agent: Do you want note ingestion from pasted text first, or from uploaded files too?
+
+You: Pasted text first. Files can wait.
+
+Agent: Good. I will keep the first release scoped to pasted text, action item extraction, owner assignment, and a Slack daily summary.
+```
+
+Once the requirements are stable, you save them to disk and the workflow moves forward.
+
+Example handoff:
+
+```text
+Agent: Requirements are complete. Please save the requirements document and give me the path, for example ./requirements.md.
+
+You: Saved at ./requirements.md
+```
+
+From there, Dev Manager continues into planning and execution instead of jumping straight into uncontrolled coding.
+
 ## Why This Exists
 
 Most development agents can write code quickly.
