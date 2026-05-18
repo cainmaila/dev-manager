@@ -1,12 +1,32 @@
-# cain-skills
+# Dev Manager
 
-Workflow-first skills for software development agents.
+Workflow-first software delivery skills for development agents.
 
 Traditional Chinese version: [README.zh-TW.md](README.zh-TW.md)
+
+Repository: https://github.com/cainmaila/dev-manager
 
 This repository is built for developers who want more than fast code generation. It provides a set of skills that push an agent through the real work of software delivery: clarifying requirements, planning execution, isolating tasks, reviewing outputs, and verifying that the system actually works.
 
 These skills are designed to make an agent more reliable under real project pressure, not just more impressive in a single prompt.
+
+## Install with npx skills
+
+Install this package with the Skills CLI:
+
+```bash
+npx skills add cainmaila/dev-manager
+```
+
+Useful variants:
+
+```bash
+# Install from the GitHub URL
+npx skills add https://github.com/cainmaila/dev-manager
+
+# Install globally instead of project-level
+npx skills add cainmaila/dev-manager -g
+```
 
 ## Why This Exists
 
@@ -25,13 +45,13 @@ Common failure modes:
 - Testing is partial, late, or skipped entirely
 - The final result looks plausible in chat but fails in the real environment
 
-cain-skills is built to close that gap.
+Dev Manager is built to close that gap.
 
 ## What Makes It Different
 
-Instead of treating software development like one long coding conversation, cain-skills treats it as a delivery workflow with explicit phases and evidence.
+Instead of treating software development like one long coding conversation, Dev Manager treats it as a delivery workflow with explicit phases and evidence.
 
-| Area                | Typical development agent           | cain-skills                                                 |
+| Area                | Typical development agent           | Dev Manager                                                 |
 | ------------------- | ----------------------------------- | ----------------------------------------------------------- |
 | Primary job         | Generate code quickly               | Orchestrate delivery from idea to verified output           |
 | Starting point      | Jump into implementation            | Clarify requirements and acceptance criteria first          |
@@ -43,7 +63,7 @@ Instead of treating software development like one long coding conversation, cain
 
 ## Problems It Solves
 
-cain-skills is for developers who have seen these problems before:
+Dev Manager is for developers who have seen these problems before:
 
 - "I have an idea, but the agent starts coding before the problem is fully defined."
 - "The result kind of works, but I cannot tell whether it is actually complete."
@@ -80,7 +100,7 @@ Together, these skills aim to make agentic development more controlled, auditabl
 
 ## Who It Is For
 
-cain-skills is especially useful for:
+Dev Manager is especially useful for:
 
 - Solo developers who want stronger engineering discipline without adding heavy process
 - Builders starting from vague product ideas and wanting a more reliable path to delivery
