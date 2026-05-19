@@ -27,11 +27,12 @@ All state is file-based. Distinguish two error classes before starting:
 
 | Artifact            | Location             | If missing                                                          |
 | ------------------- | -------------------- | ------------------------------------------------------------------- |
-| `requirements.md`   | User-provided path   | Ask user for path — may differ from project root                    |
-| `SPEC.md`           | Project root         | Fatal — cannot proceed                                              |
-| `TASKS.md`          | Project root         | Fatal — cannot proceed                                              |
-| `EXECUTION_PLAN.md` | Project root         | Fatal — cannot proceed                                              |
-| `modules/*/DONE.md` | Each task output dir | Fatal — pipeline not complete; use `dev-manager` to finish it first |
+| `requirements.md`    | User-provided path   | Ask user for path — may differ from project root                    |
+| `SPEC.md`            | Project root         | Fatal — cannot proceed                                              |
+| `TASKS.md`           | Project root         | Fatal — cannot proceed                                              |
+| `EXECUTION_PLAN.md`  | Project root         | Fatal — cannot proceed                                              |
+| `modules/*/DONE.md`  | Each task output dir | Fatal — pipeline not complete; use `dev-manager` to finish it first |
+| `MANAGER_STATE.md`   | Project root         | Non-fatal — if absent, skip state updates; if present, update it throughout Phase 4 |
 
 If any DONE.md is missing, stop and tell the user: "Pipeline is not complete — task `[task_id]` has no DONE.md. Re-run `dev-manager` to finish the pipeline before applying a change request."
 
@@ -218,6 +219,18 @@ After each agent completes, apply the same Phase 4 checks as `dev-manager`:
 | `unchanged_outputs_to_preserve` intact | No removed or regressed behaviors | Re-spawn with correction   |
 
 Loop until all re-spawned tasks have `DONE.md` Status = DONE.
+
+### MANAGER_STATE.md Updates in Phase 4
+
+If `MANAGER_STATE.md` exists in the project root (from the original `dev-manager` run), update it for each re-spawned task during this supervision loop. Note: this skill runs Gate 1 (delivery evidence) only — it does not run independent Gate 2 (spec review) or Gate 3 (quality review) sub-agents. Update the state accordingly:
+
+- Before spawning each re-spawned task: reset its gate columns to `—`, set `Accepted: no`, increment `Attempts`, append `[task_id] attempt N: initial spawn (change request [CR-id])` to `## Attempt Log`, update `Next Action`
+- After the agent returns (before reading DONE.md): set `Spawned: yes`, set `Gate1: pending`, update `Next Action`
+- After Gate 1 passes: set `Gate1: pass`; leave `Gate2` and `Gate3` as `—` (not run in this skill); set `Accepted: yes`, update `Next Action`
+- On Gate 1 failure / re-spawn: increment `Attempts`, append to `## Attempt Log` with root cause, reset `Gate1: —`, update `Next Action`
+- After all re-spawned tasks are accepted, update `Next Action` to `Enter Phase 5 Re-integration (change request [CR-id])`
+
+This keeps `MANAGER_STATE.md` accurate so that if `dev-manager` is re-invoked after a change request, it does not resume from stale pre-CR state.
 
 ---
 

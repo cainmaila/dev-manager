@@ -15,6 +15,22 @@ Act as a non-coding software development manager. Never implement code directly.
 
 If `$ARGUMENTS` is non-empty, treat it as the user's initial software idea and proceed directly to Phase 1 with that context — do not ask the user to re-state it.
 
+## Resumption Check (before Phase 1)
+
+Before starting Phase 1, check whether this invocation is resuming an in-progress project:
+
+1. If `$ARGUMENTS` looks like a filesystem path to an existing directory, or if the user's message explicitly mentions resuming or continuing a project, treat it as a resumption request.
+2. Resolve the project root path (ask once if needed).
+3. Check for `MANAGER_STATE.md` in that directory.
+4. **If found:** read it and:
+   - Check whether any `CHANGE-REQUEST-CR-*.md` files exist in the project root. If they do, warn the user:
+     > "⚠️ Change request files detected. `MANAGER_STATE.md` may reflect state before the change request was applied. Please confirm whether to resume from recorded state or re-assess manually."
+     Wait for user confirmation before proceeding.
+   - If no change request files, or user confirms to resume: announce:
+     > "Found existing project state. Resuming from: [Next Action line from MANAGER_STATE.md]."
+     Execute the recorded Next Action and continue the normal supervision loop. Do not re-run any phase or gate already marked complete.
+5. **If not found:** proceed with Phase 1 normally.
+
 ## Operating Modes
 
 Choose an execution mode before Phase 1 and state it explicitly to the user.
@@ -53,6 +69,8 @@ All phase-to-phase handoffs are **file-based**. Never proceed on in-conversation
 | Phase 7 → Complete     | Branch disposition executed                                               | Merge / PR / keep / discard decision confirmed        |
 
 **Never advance a phase without the required artifact confirmed on disk.**
+
+`MANAGER_STATE.md` is a persistent state file — not a one-time handoff artifact. The manager creates it at the end of Phase 2.75 and maintains it through Phase 7. See `references/state-management.md` for format and update rules.
 
 ---
 
@@ -181,6 +199,19 @@ Before spawning any task agents, verify the execution environment for the projec
 
 **Do not spawn task agents until the environment gate says `Status: READY`.**
 
+Write `[project-root]/MANAGER_STATE.md` immediately after writing the environment gate artifact:
+
+- Set `mode` to the chosen execution mode
+- Set `project_root`, `requirements_path`, `spec_path`, `execution_plan_path` to confirmed paths
+- Populate the Task Registry with one row per task from `EXECUTION_PLAN.md`; initialize all gate columns to `—`, `Spawned: no`, `Accepted: no`, `Attempts: 0`
+- Set Phase 5–7 statuses to `not_started`
+
+**If the environment gate returns `Status: READY`:** set `phase: 3`, set `Next Action` to `Spawn first ready task wave from EXECUTION_PLAN.md`.
+
+**If the environment gate returns `Status: BLOCKED`:** set `phase: 2.75`, set `Next Action` to `Resolve environment gate blocker: [specific blocker from ENVIRONMENT_READY.md]`. Do not advance to Phase 3 until the blocker is resolved and `Status: READY` is written; then update state to `phase: 3` and the spawn Next Action before proceeding.
+
+See `references/state-management.md` for full format.
+
 ---
 
 ## Phase 3 — Parallel Task Development
@@ -194,6 +225,13 @@ For each task row, spawn an independent sub-agent using available sub-agent spaw
 1. **One agent per task.** Never assign two tasks to the same agent.
 2. **No shared mutable state.** Each agent writes only to its `output_dir`.
 3. **Self-contained prompt.** Each agent prompt must include all context it needs — it has no access to conversation history.
+
+### State Updates in Phase 3
+
+Before spawning each task agent:
+1. Update `MANAGER_STATE.md` — set `Next Action` to `Spawn [task_id]`, set task row `Spawned: pending`, append `[task_id] attempt 1: initial spawn` to `## Attempt Log`
+2. Spawn the agent
+3. After the agent **returns** (before reading its output), update `MANAGER_STATE.md`: set `Spawned: yes`, set `Gate1: pending`, set `Next Action` to `Check Gate1 for [task_id]`
 
 ### Spawn Order
 
@@ -237,6 +275,16 @@ Spawn `senior-engineer` with the payload above. Manager expectations after the t
 ## Phase 4 — Supervision Loop
 
 After each task agent completes, supervise it in three gates. A task is accepted only when all three pass.
+
+### State Updates in Phase 4
+
+Before each gate check or re-spawn, update `MANAGER_STATE.md`:
+- Set `Next Action` to describe the specific action (e.g., `Check Gate1 for TASK-002`, `Spawn Gate2 reviewer for TASK-002`, `Re-spawn TASK-002 — Gate2 fail: missing pagination`)
+- Set the relevant gate column to `pending` before spawning a reviewer; set to `pass` or `fail` after reading the result
+- On re-spawn: increment `Attempts`; reset the failing gate to `—`; append one line to `## Attempt Log` in `MANAGER_STATE.md` with the task ID, attempt number, gate, and root cause (e.g., `TASK-002 attempt 2: Gate2 CHANGES_REQUIRED — missing pagination on GET /items`)
+- On task acceptance: set `Accepted: yes` for that task
+
+When `Attempts` reaches 3, check the `## Attempt Log` entries for that task. Attempt 1 is always "initial spawn"; if attempts 2 and 3 both show the same root cause, escalate to the user — record the escalation reason in `Next Action` and do not re-spawn. If root causes differ, continue re-spawning.
 
 ### Gate 1 — Delivery Evidence
 
@@ -298,6 +346,15 @@ The re-spawn payload format remains the same: pass the updated YAML directly to 
 
 **Trigger:** `check-done.sh` exits 0.
 
+Before spawning the integration agent, update `MANAGER_STATE.md`:
+- Set `phase: 5`
+- Set Phase 5 `status: in_progress`
+- Set `Next Action` to `Spawn integration agent`
+
+After the integration agent returns:
+- If passing: set Phase 5 `status: passed`, set `Next Action` to `Enter Phase 6 — Deployment Verification`
+- If failing: set Phase 5 `status: failed`, set `Next Action` to `Re-spawn affected tasks for integration failures: [list task IDs]`
+
 Spawn a single integration agent:
 
 ```
@@ -326,7 +383,7 @@ Rules:
 - Do not modify module source files
 ```
 
-If integration fails, identify the failing task or contract owner from `EXECUTION_PLAN.md`, then spawn targeted implementation sub-agents using the re-spawn pattern from Phase 4. Each sub-agent invokes `senior-engineer` with the failing task's YAML payload plus the `previous_attempt_review` and `fix_required` fields populated from `integration-report.md`.
+If integration fails, identify the failing task or contract owner from `EXECUTION_PLAN.md`, then spawn targeted implementation sub-agents using the re-spawn pattern from Phase 4. Apply the same Task Registry updates as Phase 4 re-spawn: increment `Attempts` for each affected task, reset its failing gate to `—`, set `Accepted: no`, and update `Next Action`. The re-spawned tasks must pass all three Phase 4 gates before re-entering integration. Each sub-agent invokes `senior-engineer` with the failing task's YAML payload plus the `previous_attempt_review` and `fix_required` fields populated from `integration-report.md`.
 
 When `integration-report.md` shows all integration points passing, proceed to **Phase 6**.
 
@@ -335,6 +392,15 @@ When `integration-report.md` shows all integration points passing, proceed to **
 ## Phase 6 — Deployment Verification Loop
 
 **Trigger:** `integration-report.md` shows all integration points passing.
+
+Before spawning the deployment verifier, update `MANAGER_STATE.md`:
+- Set `phase: 6`
+- Set Phase 6 `status: in_progress`, increment `attempt`
+- Set `Next Action` to `Spawn deployment-verifier (attempt [N])`
+
+After each verifier returns:
+- PASS: set Phase 6 `status: passed`, set `Next Action` to `Enter Phase 7 — Branch Completion`
+- PARTIAL/FAIL: set Phase 6 `status: failed`, set `Next Action` to `Re-spawn affected tasks for deployment issues: [list task IDs]`; after re-spawns complete, loop back (increment `attempt` on next verifier spawn)
 
 **Never skip this phase.** Passing integration checks is not proof the system runs. Phase 6 is the gate between "code is correct" and "system is actually working."
 
@@ -401,6 +467,15 @@ fix_scope: deployment_only # do not change anything outside the failing componen
 
 **Trigger:** `deployment-verifier` returned ✅ PASS.
 
+Before presenting options to the user, update `MANAGER_STATE.md`:
+- Set `phase: 7`
+- Set Phase 7 `status: in_progress`
+- Set `Next Action` to `Present branch disposition options to user`
+
+After the user selects a disposition and it is executed:
+- Set Phase 7 `status: complete`
+- Set `Next Action` to `Complete — branch disposition executed: [merge/PR/keep/discard]`
+
 Before reporting completion, decide how this work will be integrated.
 
 ### Step 1 — Present exactly four options
@@ -461,4 +536,5 @@ Escalate to the user only when:
 - **`references/execution-modes.md`** — Strict vs Lean mode rules, allowed shortcuts, and non-negotiable gates
 - **`references/isolation-rules.md`** — Directory ownership rules, DONE.md contract, conflict prevention checklist
 - **`references/review-gates.md`** — Required review artifacts, reviewer prompts, and approval criteria for Phase 4
+- **`references/state-management.md`** — MANAGER_STATE.md format, field definitions, update triggers, and resumption procedure
 - **`scripts/check-done.sh`** — Scan `[project-root]/modules/` for DONE.md files; exits 0 when all task outputs are DONE

@@ -16,9 +16,14 @@ project/
 │   ├── task-003/    ← owned by TASK-003 agent only
 │   ├── task-004/    ← owned by TASK-004 agent only
 │   └── task-005/    ← owned by TASK-005 agent only
-├── SPEC.md          ← read-only for all agents
-├── TASKS.md         ← read-only for all agents
-└── integration-report.md  ← written by integration-agent only
+├── SPEC.md                      ← read-only for all agents
+├── TASKS.md                     ← read-only for all agents
+├── EXECUTION_PLAN.md            ← read-only for all agents
+├── ENVIRONMENT_READY.md         ← read-only for all agents
+├── MANAGER_STATE.md             ← written by manager only; never by sub-agents
+├── integration-report.md        ← written by integration-agent only
+├── CHANGE-REQUEST-CR-*.md       ← written by dev-change-manager skill (manager only)
+└── CHANGE-IMPACT-CR-*.md        ← written by dev-change-manager skill (manager only)
 ```
 
 **Rules:**
@@ -26,6 +31,7 @@ project/
 - Agent may read any file in the project.
 - Agent may write only inside its own task directory.
 - Manager (Claude) writes to project root only.
+- Sub-agents must never write to `MANAGER_STATE.md`. It is a manager-exclusive file.
 
 ---
 
@@ -110,6 +116,11 @@ Every task agent must write `DONE.md` in its `output_dir` before finishing.
 - [file or feature created]
 - (or "none")
 
+## Test Results
+
+[command run, e.g. `pytest modules/task-001/tests/ -v`]
+[output summary or "all N tests passed"]
+
 ## Skipped
 
 - [explicitly deferred item]
@@ -134,7 +145,8 @@ Every task agent must write `DONE.md` in its `output_dir` before finishing.
 
 - `## Status:` must be the first heading, value must be exactly `DONE`, `BLOCKED`, or `PARTIAL`
 - `## Blockers` must be present even if empty (write "none")
+- `## Test Results` must be present and must show actual command output, not a placeholder — the manager reads it as Gate 1 delivery evidence
+- `check-done.sh` parses only `## Status:` and `## Blockers`; it does not parse `## Test Results`, but the manager does during Gate 1 supervision
 - No extra headings between `## Status:` and `## Blockers` that could shift the parse offset
-- `check-done.sh` reads Status from line matching `^## Status:` and Blockers from lines after `^## Blockers`
 
 Manager reads DONE.md to decide: accept, re-spawn, or escalate.
