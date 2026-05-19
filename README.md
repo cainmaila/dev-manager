@@ -142,8 +142,28 @@ Key skills in this repository include:
 - `dev-manager`: acts as a non-coding orchestrator across the full delivery lifecycle
 - `senior-engineer`: executes one focused implementation task with test-first discipline
 - `deployment-verifier`: checks whether the finished system actually starts and behaves correctly
+- `dev-doc-cleaner`: audits and cleans stale dev-manager documents in a project root
 
 Together, these skills aim to make agentic development more controlled, auditable, and useful in real projects.
+
+## dev-doc-cleaner
+
+**When to use:** After a project has accumulated stale task records, superseded change requests, or conflicting planning documents. Run it when `TASKS.md`, CR files, or `MANAGER_STATE.md` are out of sync with actual project state.
+
+**Invoke:**
+
+```text
+/dev-doc-cleaner ./my-project
+```
+
+**What it does:**
+
+1. Scans all `dev-manager` and `dev-change-manager` documents under the given project root
+2. Classifies each document as Current, Stale, Obsolete, or Conflict
+3. Shows you a cleanup plan — no files touched until you confirm
+4. Executes: resolves conflicts, compacts `TASKS.md`, archives obsolete files, deletes only what you explicitly approve
+
+**Safety:** Read-only until you type `confirm`. Defaults to archive over delete.
 
 ## Who It Is For
 
