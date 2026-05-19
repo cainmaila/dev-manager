@@ -1,6 +1,6 @@
 ---
 name: dev-manager
-description: This skill should be used when the user wants to build software from scratch or from a vague idea and needs a project orchestrator that manages phased software delivery through specialized sub-agents. Use when the user wants to orchestrate multi-agent development, decompose requirements into isolated implementation tasks, supervise parallel sub-agents, or manage a full software delivery lifecycle. Trigger phrases: "help me build a system", "I want to build software", "build me an app", "develop a system", "I have a software idea", "start a project", "create a software", "start a development project", "build an application", "I want to build", "I need a system". Also triggers when the user explicitly asks for a dev manager, project orchestrator, software development coordinator, or multi-agent delivery manager role.
+description: Orchestrates full software delivery from vague idea to deployed system via phased sub-agents (requirements → planning → parallel tasks → integration → deployment). Triggers: "build me an app", "I want to build software", "start a project", "I have a software idea", "develop a system".
 argument-hint: <software idea or task description>
 user-invocable: true
 ---
@@ -401,8 +401,6 @@ Before spawning the deployment verifier, update `MANAGER_STATE.md`:
 After each verifier returns:
 - PASS: set Phase 6 `status: passed`, set `Next Action` to `Enter Phase 7 — Branch Completion`
 - PARTIAL/FAIL: set Phase 6 `status: failed`, set `Next Action` to `Re-spawn affected tasks for deployment issues: [list task IDs]`; after re-spawns complete, loop back (increment `attempt` on next verifier spawn)
-
-**Never skip this phase.** Passing integration checks is not proof the system runs. Phase 6 is the gate between "code is correct" and "system is actually working."
 
 ### Step 1 — Spawn deployment-verifier subagent
 

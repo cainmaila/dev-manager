@@ -1,6 +1,6 @@
 ---
 name: dev-change-manager
-description: This skill should be used when the user wants to modify requirements for an already-completed dev-manager project, add a new feature to an existing system, change existing functionality, or re-trigger the development team after requirements change. All task outputs must already have DONE.md (pipeline complete). To resume an incomplete pipeline, re-run dev-manager instead. Trigger phrases: "I want to modify requirements", "I want to add a feature to an existing project", "requirements change", "change request", "add feature to existing project", "modify existing system", "update requirements for existing system", "I need to change the requirements", "help me modify an existing system", "the requirements changed", "requirements have changed", "modify requirements after development is complete".
+description: Applies change requests to completed dev-manager projects — impact analysis, minimal re-entry, targeted re-spawn only. Requires all tasks to have DONE.md; use dev-manager for incomplete pipelines. Triggers: "modify requirements", "add feature to existing project", "requirements changed", "change request", "modify existing system".
 argument-hint: <project root path> <brief change description>
 user-invocable: true
 ---
@@ -239,7 +239,6 @@ This keeps `MANAGER_STATE.md` accurate so that if `dev-manager` is re-invoked af
 **Trigger:** All re-spawned tasks DONE.
 
 Always re-run integration — even if only one task changed.
-Reason: contract changes in one task can break adjacent preserved tasks.
 
 Spawn the integration agent from `dev-manager` Phase 5 with the updated task output directory list.
 
@@ -278,8 +277,6 @@ Apply same verdict handling:
 | ✅ PASS    | Proceed to completion report                                                                               |
 | ⚠️ PARTIAL | Re-spawn failing tasks → apply Phase 4 supervision checks → re-run Phase 5 integration → return to Phase 6 |
 | ❌ FAIL    | Re-spawn failing tasks → apply Phase 4 supervision checks → re-run Phase 5 integration → return to Phase 6 |
-
-**Never skip Phase 5 after a re-spawn.** Deployment failures may result from cross-task contract drift that integration must catch before the next verification attempt.
 
 ---
 

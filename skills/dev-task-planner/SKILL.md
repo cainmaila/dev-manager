@@ -1,6 +1,6 @@
 ---
 name: dev-task-planner
-description: This skill should be used when the user provides a requirements document and wants to generate system development tasks through a structured technical interview. Trigger phrases: "help me break down development tasks", "generate tasks from requirements document", "I have a requirements document to decompose into tasks", "system development task planning", "tech task planning", "break down requirements into tasks", "generate dev tasks from spec". Acts as a senior software engineer who interviews the user about technical implementation choices and produces a project folder with system specification and decomposed, independently-verifiable development tasks.
+description: Converts a requirements document into parallelizable implementation tasks via structured technical interview. Triggers: "break down requirements into tasks", "generate dev tasks from spec", "decompose requirements into tasks".
 ---
 
 # Dev Task Planner

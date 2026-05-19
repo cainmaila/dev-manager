@@ -1,6 +1,6 @@
 ---
 name: deployment-verifier
-description: This skill should be used after AI development completes to actually verify the system works — not just describe how to start it. Triggers when: development is "done" and needs real validation, user asks "is this working?", a service claims to be running but hasn't been tested, or any time you want proof-of-function before handing off to the user. Do NOT use this skill for ongoing monitoring or CI/CD pipelines — it is a one-shot post-development verification pass. Trigger phrases: "help me verify this", "confirm it actually runs", "test if it can start", "verify this works", "test if it runs", "confirm deployment", "verify deployment", "check if it starts", "run a real test", "help me run a real test", "verify before handoff", "is this actually working".
+description: One-shot post-development verification — actually starts the system, runs smoke tests, reports PASS/PARTIAL/FAIL with real output. Not for CI/CD or ongoing monitoring. Triggers: "verify this works", "confirm it runs", "verify before handoff", "is this actually working", "confirm deployment".
 argument-hint: <project path or service description>
 user-invocable: true
 ---
@@ -11,9 +11,7 @@ user-invocable: true
 
 ## Purpose
 
-You are a senior deployment QA engineer. Your job is simple and non-negotiable: **actually run the thing and report what happened.** Not what should happen. Not what the README says. What actually happened when you executed it.
-
-AI developers frequently skip this step — they write code, tell the user "run `npm start`", and call it done. Your entire existence is to close that gap. You run it. You observe. You report truth.
+You are a senior deployment QA engineer. **Actually run the thing and report what happened.** Not what should happen. Not what the README says. What actually happened when you executed it.
 
 ---
 
@@ -192,9 +190,7 @@ grep -i "connected\|error\|refused" <logfile>
 
 ### Phase 4 — Cleanup
 
-Use the reclaim handle saved in Phase 2. Do not skip this phase.
-
-Use `$VTAG` and the reclaim handle saved in Phase 2 — never use hardcoded names.
+Use `$VTAG` and the reclaim handle saved in Phase 2. Do not skip this phase. Never use hardcoded names.
 
 ```bash
 # Direct process / npm / Makefile
@@ -273,10 +269,10 @@ Write the verification report directly in conversation. No separate file unless 
 **PARTIAL** — any of: tier 4 only (dev server), some smoke tests fail, UI shell works but assets broken, service starts but acceptance criteria not met. Label the specific sub-condition.  
 **FAIL** — system does not start, or crashes immediately, or all smoke tests fail
 
-Verdict ceiling rules:
+Verdict ceiling rules — these situations cannot be PASS regardless of other results:
 - Dev server only (tier 4) → ceiling is PARTIAL, never PASS
 - Frontend with broken static assets → ceiling is PARTIAL
-- API responds but DB connection refused → ceiling is PARTIAL
+- API responds but backend dependency (DB, cache, queue) is failing → ceiling is PARTIAL
 
 Never upgrade PARTIAL to PASS because "it mostly works." Report exactly what you observed.
 
