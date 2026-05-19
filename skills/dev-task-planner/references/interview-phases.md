@@ -196,7 +196,7 @@ After every answer, scan for these contradiction patterns:
 
 When a contradiction is found, surface it:
 
-> "我注意到一個可能的矛盾：你選了 [A]，但也提到 [B]，這兩個可能衝突，因為 [reason]。你想怎麼解決？"
+> "I noticed a possible contradiction: you chose [A], but also mentioned [B], which may conflict because [reason]. How would you like to resolve this?"
 
 Do not proceed to the next question until the contradiction is resolved.
 
@@ -213,7 +213,7 @@ Interview is complete when:
 
 Final confirmation message — adapt to user's language:
 
-> ZH: "技術決策已全部確認，無矛盾。MVP 範圍：[summary]. 準備拆解開發任務。"
+> ZH: "All technical decisions confirmed, no contradictions. MVP scope: [summary]. Ready to decompose development tasks."
 > EN: "All technical decisions confirmed, no contradictions. MVP scope: [summary]. Ready to generate tasks."
 
 Then proceed to ask for output path (Workflow Phase 3).

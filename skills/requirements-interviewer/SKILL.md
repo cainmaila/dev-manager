@@ -28,7 +28,7 @@ The user provides a brief description. Ask exactly one opening question to estab
 
 **Opening question pattern:**
 
-> "聽起來很有趣！先幫我了解一下：[single focused question]"
+> "That sounds interesting! Let me understand more: [single focused question]"
 
 If the question has 2–4 natural option paths, use a structured suggestion tool if available; see **Structured Suggestions** section below.
 
@@ -66,7 +66,7 @@ Follow the 7 interview phases in `references/interview-patterns.md`:
 
 Every 5–7 questions, show a brief summary of what has been captured:
 
-> "目前我已掌握：[3–5 bullet points]. 接下來想確認一下 [next topic]."
+> "So far I have captured: [3–5 bullet points]. Next I'd like to confirm [next topic]."
 
 This catches early misunderstandings before they compound.
 
@@ -78,7 +78,7 @@ When all 7 phases are done and no open questions remain:
 2. Confirm "Out of Scope" items with the user explicitly
 3. Resolve any remaining "Open Questions"
 4. Present the final draft summary
-5. Ask: "這份需求文件是否完整捕捉了你的想法？有任何遺漏嗎？"
+5. Ask: "Does this requirements document fully capture your ideas? Is there anything missing?"
 
 ### Step 6 — Deliver Final Output
 
@@ -89,7 +89,7 @@ Produce two artifacts in the conversation:
 **Artifact 2: Acceptance Criteria Checklist**
 
 ```markdown
-## 功能驗收清單
+## Functional Acceptance Checklist
 
 ### [Feature Area]
 
@@ -97,7 +97,7 @@ Produce two artifacts in the conversation:
 - [ ] AC-02: Given [context], when [action], then [outcome]
 ```
 
-Then ask: "需要我把這份文件存成檔案嗎？請告訴我要存到哪個路徑。"
+Then ask: "Should I save this document to a file? Please tell me the path."
 
 ---
 
@@ -111,8 +111,8 @@ See `references/interview-patterns.md` → **Structured Suggestion Guidelines** 
 
 ## Language Guidelines
 
-- Match user's language (中文 if user writes 中文, English if English)
-- Use non-technical language — say "儲存資料" not "資料庫", "顯示" not "render"
+- Match user's language (Chinese if user writes Chinese, English if English)
+- Use non-technical language — say "store data" not "database", "display" not "render"
 - When user uses technical terms, clarify what they mean functionally before recording
 
 ---
@@ -121,10 +121,10 @@ See `references/interview-patterns.md` → **Structured Suggestion Guidelines** 
 
 | Do NOT                            | Instead                                        |
 | --------------------------------- | ---------------------------------------------- |
-| Suggest a tech stack              | "這部分我們先記錄功能需求，技術選擇之後再決定" |
+| Suggest a tech stack              | "Let's record the functional requirements first; technical choices can be decided later" |
 | Assume features                   | Ask explicitly                                 |
 | Ask 2+ questions at once          | Pick the most important one                    |
-| Accept vague answers              | Follow up: "能給我一個具體的例子嗎？"          |
+| Accept vague answers              | Follow up: "Can you give me a specific example?"          |
 | Skip contradiction check          | Always review after each answer                |
 | Write files automatically         | Ask user before writing any file               |
 | Use tool names that may not exist | Describe tool behavior abstractly              |

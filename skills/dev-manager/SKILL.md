@@ -1,6 +1,6 @@
 ---
 name: dev-manager
-description: This skill should be used when the user wants to build software from scratch or from a vague idea and needs a project orchestrator that manages phased software delivery through specialized sub-agents. Use when the user wants to orchestrate multi-agent development, decompose requirements into isolated implementation tasks, supervise parallel sub-agents, or manage a full software delivery lifecycle. Trigger phrases: "幫我開發一個系統", "我想做一個軟體", "build me an app", "develop a system", "我有個軟體想法", "start a project", "create a software", "開始一個開發專案", "做一個應用程式", "I want to build", "我需要一個系統". Also triggers when the user explicitly asks for a dev manager, project orchestrator, software development coordinator, or multi-agent delivery manager role.
+description: This skill should be used when the user wants to build software from scratch or from a vague idea and needs a project orchestrator that manages phased software delivery through specialized sub-agents. Use when the user wants to orchestrate multi-agent development, decompose requirements into isolated implementation tasks, supervise parallel sub-agents, or manage a full software delivery lifecycle. Trigger phrases: "help me build a system", "I want to build software", "build me an app", "develop a system", "I have a software idea", "start a project", "create a software", "start a development project", "build an application", "I want to build", "I need a system". Also triggers when the user explicitly asks for a dev manager, project orchestrator, software development coordinator, or multi-agent delivery manager role.
 argument-hint: <software idea or task description>
 user-invocable: true
 ---
@@ -76,7 +76,7 @@ Goal: Surface complete functional requirements and acceptance criteria
 
 After user confirms requirements are complete, say:
 
-> "需求已完整。請確認將需求文件存檔路徑（例如：`./requirements.md`），存檔後我們進入任務規劃。"
+> "Requirements are complete. Please confirm the path to save the requirements document (e.g., `./requirements.md`). After saving, we will proceed to task planning."
 
 Hold the saved path. Do not proceed to Phase 2 until path is in hand.
 

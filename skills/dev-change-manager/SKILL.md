@@ -1,6 +1,6 @@
 ---
 name: dev-change-manager
-description: This skill should be used when the user wants to modify requirements for an already-completed dev-manager project, add a new feature to an existing system, change existing functionality, or re-trigger the development team after requirements change. All task outputs must already have DONE.md (pipeline complete). To resume an incomplete pipeline, re-run dev-manager instead. Trigger phrases: "我想修改需求", "我要新增功能到現有專案", "需求變更", "change request", "add feature to existing project", "modify existing system", "更新現有系統的需求", "I need to change the requirements", "幫我修改現有系統", "the requirements changed", "需求有變", "開發完成後要修改需求".
+description: This skill should be used when the user wants to modify requirements for an already-completed dev-manager project, add a new feature to an existing system, change existing functionality, or re-trigger the development team after requirements change. All task outputs must already have DONE.md (pipeline complete). To resume an incomplete pipeline, re-run dev-manager instead. Trigger phrases: "I want to modify requirements", "I want to add a feature to an existing project", "requirements change", "change request", "add feature to existing project", "modify existing system", "update requirements for existing system", "I need to change the requirements", "help me modify an existing system", "the requirements changed", "requirements have changed", "modify requirements after development is complete".
 argument-hint: <project root path> <brief change description>
 user-invocable: true
 ---
@@ -55,7 +55,7 @@ If any DONE.md is missing, stop and tell the user: "Pipeline is not complete —
 
 Confirm to the user:
 
-> "已讀取專案文件。開始收集變更需求。"
+> "Project documents loaded. Starting change request collection."
 
 ---
 
@@ -110,7 +110,7 @@ Tasks to preserve: [list]
 Re-run dev-task-planner: [Yes / No]
 ```
 
-Ask: "這份影響分析是否正確？確認後開始更新文件。"
+Ask: "Is this impact analysis correct? Confirm to begin updating documents."
 
 Do not proceed without user confirmation.
 

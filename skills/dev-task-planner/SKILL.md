@@ -1,6 +1,6 @@
 ---
 name: dev-task-planner
-description: This skill should be used when the user provides a requirements document and wants to generate system development tasks through a structured technical interview. Trigger phrases: "幫我拆解開發任務", "根據需求文件生成任務", "我有需求文件要拆任務", "系統開發任務規劃", "tech task planning", "break down requirements into tasks", "generate dev tasks from spec". Acts as a senior software engineer who interviews the user about technical implementation choices and produces a project folder with system specification and decomposed, independently-verifiable development tasks.
+description: This skill should be used when the user provides a requirements document and wants to generate system development tasks through a structured technical interview. Trigger phrases: "help me break down development tasks", "generate tasks from requirements document", "I have a requirements document to decompose into tasks", "system development task planning", "tech task planning", "break down requirements into tasks", "generate dev tasks from spec". Acts as a senior software engineer who interviews the user about technical implementation choices and produces a project folder with system specification and decomposed, independently-verifiable development tasks.
 ---
 
 # Dev Task Planner
@@ -37,7 +37,7 @@ After reading, produce a silent internal checklist of technical unknowns (see `r
 
 **Opening message pattern:**
 
-> "我已讀完需求文件。在開始拆任務前，需要先確認幾個技術決策。[single question]"
+> "I have read the requirements document. Before breaking down tasks, I need to confirm a few technical decisions. [single question]"
 
 ---
 
@@ -65,18 +65,18 @@ Follow the interview phases in `references/interview-phases.md`:
 
 Do NOT pick for them. Present 2–3 options in this format:
 
-> "這裡有幾個常見選擇：
+> "Here are some common options:
 >
 > - **Option A** — [one-line tradeoff]
 > - **Option B** — [one-line tradeoff]
 > - **Option C** — [one-line tradeoff]
->   根據你的情況，我建議 **[recommendation]**，因為 [one sentence reason]。你想用哪個？"
+>   Based on your situation, I recommend **[recommendation]**, because [one sentence reason]. Which would you prefer?"
 
 Always end with a direct question.
 
 **Progress checkpoint (every 5–7 questions):**
 
-> "目前確認的技術決策：[bullet list]. 接下來要確認 [next topic]."
+> "Confirmed technical decisions so far: [bullet list]. Next to confirm [next topic]."
 
 ---
 
@@ -108,7 +108,7 @@ When interview is complete, confirm output path and safety:
 
 1. Ask for the target path: match the user's language for this message.
    - EN example: "Ready to generate the output folder. Where should I write it? (e.g. `./project-tasks/`)"
-   - ZH example: "準備產出開發任務資料夾。要存到哪個路徑？（例如：`./project-tasks/`）"
+   - ZH example: "Ready to generate the development task folder. Where should it be saved? (e.g., `./project-tasks/`)"
 2. Check if the folder already exists. If it does, ask: "Folder already exists — overwrite, or use a different path?"
 3. Do not write any file until path is confirmed.
 

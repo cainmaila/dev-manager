@@ -86,23 +86,23 @@ Always: one question per turn, regardless of format.
 
 ### Good Example
 
-> 這個軟體主要是給哪種使用者用的？
-> - 一般消費者（自己個人使用）
-> - 企業內部員工
-> - 企業的外部客戶
-> - 其他（請說明）
+> Who is the primary user of this software?
+> - Individual consumer (personal use)
+> - Internal business employees
+> - External business customers
+> - Other (please describe)
 
-**Why good:** Functionally distinct options, no technical bias, "其他" preserves open-ended escape.
+**Why good:** Functionally distinct options, no technical bias, "Other" preserves open-ended escape.
 
 ### Bad Examples
 
-> 你想用哪種架構？單體式還是微服務？
+> Which architecture do you want? Monolithic or microservices?
 **Why bad:** Technical options — irrelevant to functional requirements.
 
-> 你希望系統有哪些功能？A) 登入 B) 搜尋 C) 通知 D) 報表 E) 匯出 F) 儀表板
+> What features do you want in the system? A) Login B) Search C) Notifications D) Reports E) Export F) Dashboard
 **Why bad:** Too many options, premature — we haven't established the core use case yet.
 
-> 這個 app 你有想法嗎？A) 有 B) 沒有
+> Do you have ideas for this app? A) Yes B) No
 **Why bad:** Yes/no that yields no useful information — ask as open-ended plain text instead.
 
 ---
@@ -162,7 +162,7 @@ End the interview when:
 
 Use these to recognize when this skill applies:
 
-**中文:** "我有個軟體想法", "幫我整理需求", "我想開發一個", "訪談需求", "需求訪談", "幫我釐清需求"
+**Chinese:** "I have a software idea", "help me organize requirements", "I want to develop a", "interview requirements", "requirements interview", "help me clarify requirements"
 
 **English:** "gather requirements", "interview me for requirements", "I have an idea for an app", "help me define what I want to build"
 
@@ -170,14 +170,14 @@ Use these to recognize when this skill applies:
 
 ## Pressure Scenarios — Pass Criteria
 
-**Scenario 1 — Minimal input: user says "我想做個 app"**
+**Scenario 1 — Minimal input: user says "I want to build an app"**
 - Pass: Ask exactly one question about who the app is for or what problem it solves
 - Fail: Ask multiple questions, or start listing possible features
 
-**Scenario 2 — User asks about technology mid-interview: "那後端要用什麼？"**
-- Pass: Redirect without answering — "這部分我們先把功能確認清楚，技術細節之後再討論。目前想確認的是 [next functional question]"
+**Scenario 2 — User asks about technology mid-interview: "What should we use for the backend?"**
+- Pass: Redirect without answering — "Let's first clarify the functional requirements; technical details can be discussed later. Currently I'd like to confirm [next functional question]"
 - Fail: Recommend any tech stack or framework
 
-**Scenario 3 — Contradictory answers: earlier said "不需要登入", now says "每個人有自己的歷史紀錄"**
-- Pass: Stop, surface the contradiction explicitly — "我注意到一個地方需要確認：你之前說不需要登入，但現在提到每個人有自己的歷史紀錄。這兩個似乎有衝突，你希望怎麼處理？" — wait for resolution before continuing
+**Scenario 3 — Contradictory answers: earlier said "login is not needed", now says "everyone has their own history"**
+- Pass: Stop, surface the contradiction explicitly — "I noticed something to confirm: you said earlier that login is not needed, but now you mentioned everyone has their own history. These seem to conflict — how would you like to handle this?" — wait for resolution before continuing
 - Fail: Record both without flagging, or silently pick one
