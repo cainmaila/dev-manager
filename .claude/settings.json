@@ -5,14 +5,16 @@
       "Bash(mkdir -p /Users/cain/github/cain-skills/skills/senior-engineer/references)",
       "Bash(mkdir -p /Users/cain/github/cain-skills/skills/deployment-verifier)",
       "Bash(mkdir -p /Users/cain/github/cain-skills/skills/dev-change-manager/references)",
-      "Bash(mkdir -p /Users/cain/github/cain-skills/skills/dev-doc-cleaner/references)"
+      "Bash(mkdir -p /Users/cain/github/cain-skills/skills/dev-doc-cleaner/references)",
+      "Bash(mkdir -p /Users/cain/github/cain-skills/skills/product-ux-advisor/references)"
     ],
     "additionalDirectories": [
       "/Users/cain/github/cain-skills/skills/requirements-interviewer",
       "/Users/cain/github/cain-skills/skills/senior-engineer",
       "/Users/cain/github/cain-skills/skills",
       "/Users/cain/github/cain-skills/skills/dev-change-manager",
-      "/Users/cain/github/cain-skills/skills/dev-doc-cleaner"
+      "/Users/cain/github/cain-skills/skills/dev-doc-cleaner",
+      "/Users/cain/github/cain-skills/skills/product-ux-advisor"
     ]
   }
 }
