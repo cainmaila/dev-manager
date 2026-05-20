@@ -1,6 +1,6 @@
 ---
 name: deployment-verifier
-description: Starts the system and runs smoke tests, reporting PASS/PARTIAL/FAIL with real output. Not for CI/CD. Triggers: verify this works, confirm it runs, verify before handoff, confirm deployment.
+description: "Starts the system and runs smoke tests, reporting PASS/PARTIAL/FAIL with real output. Not for CI/CD. Triggers: verify this works, confirm it runs, verify before handoff, confirm deployment."
 argument-hint: <project path or service description>
 user-invocable: true
 ---

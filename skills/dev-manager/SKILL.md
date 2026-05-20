@@ -1,6 +1,6 @@
 ---
 name: dev-manager
-description: Orchestrates full software delivery via phased sub-agents. Triggers: build me an app, I want to build software, start a project, I have a software idea, develop a system.
+description: "Orchestrates full software delivery via phased sub-agents. Triggers: build me an app, I want to build software, start a project, I have a software idea, develop a system."
 argument-hint: <software idea or task description>
 user-invocable: true
 ---
