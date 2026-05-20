@@ -181,12 +181,26 @@ Key skills in this repository include:
 | :------------------------- | :-------------------------------------------------------------------------------- |
 | `requirements-interviewer` | Turns vague requests into explicit requirements and acceptance criteria           |
 | `dev-task-planner`         | Converts requirements into a spec, task breakdown, and execution-ready work items |
-| `dev-manager`              | Acts as a non-coding orchestrator across the full delivery lifecycle              |
-| `senior-engineer`          | Executes one focused implementation task with test-first discipline               |
+| `dev-manager` | Acts as a non-coding orchestrator across the full delivery lifecycle |
+| `dev-change-manager` | Manages software change requests (CR), bug fixes, and feature modifications on an existing codebase |
+| `senior-engineer` | Executes one focused implementation task with test-first discipline |
 | `deployment-verifier`      | Checks whether the finished system actually starts and behaves correctly          |
 | `dev-doc-cleaner`          | Audits and cleans stale dev-manager documents in a project root                   |
 
 Together, these skills aim to make agentic development more controlled, auditable, and useful in real projects.
+
+---
+
+## 🔄 Tool Spotlight: `dev-change-manager`
+
+> [!TIP]
+> **When to use:** Use this skill when you want to modify, refactor, or fix bugs in an existing codebase, rather than starting a new project from scratch. It structures the **Change Request (CR)** workflow to ensure updates do not break existing features.
+
+### 💻 How to Invoke
+
+```text
+/dev-change-manager [change instruction]
+```
 
 ---
 

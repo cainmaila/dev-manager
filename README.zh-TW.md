@@ -182,11 +182,25 @@ graph TD
 | `requirements-interviewer` | 把模糊需求整理成明確需求與驗收標準 |
 | `dev-task-planner` | 把需求轉成系統規格、任務拆解與可執行工作項目 |
 | `dev-manager` | 用非寫碼主管的角色編排整條交付流程 |
+| `dev-change-manager` | 負責處理既有程式碼庫的變更需求 (CR)、Bug 修復或功能修改 |
 | `senior-engineer` | 以測試優先與明確邊界執行單一實作任務 |
 | `deployment-verifier` | 確認最後的系統是否真的能啟動並正確運作 |
 | `dev-doc-cleaner` | 審查並清理指定專案根目錄下過時的 dev-manager 文件 |
 
 這些技能組合起來的目標，是讓 Agent 開發流程更穩、更可審核，也更接近真實專案需要的交付方式。
+
+---
+
+## 🔄 工具亮點：`dev-change-manager`
+
+> [!TIP]
+> **使用時機：** 當您需要在**既有的程式碼庫**上進行功能修改、代碼重構或修復 Bug，而不是重頭開發全新專案時使用。它能將「變更需求 (Change Request, CR)」的流程結構化，確保每次更新都不會破壞原本已正常運作的既有功能。
+
+### 💻 呼叫方式
+
+```text
+/dev-change-manager [修改需求內容]
+```
 
 ---
 
