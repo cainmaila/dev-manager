@@ -4,6 +4,30 @@ Reference payload patterns for common task types. Copy and adapt when spawning `
 
 ---
 
+## Base Payload Template
+
+```yaml
+task_id: [task_id]
+title: "[task title]"
+acceptance_criteria:
+  - "[criterion from TASKS.md]"
+  - "[criterion from TASKS.md]"
+output_dir: "[output_dir]"
+spec_path: "[full path to SPEC.md]"
+interface_contract:
+  - "[contract item from TASKS.md contract fields]"
+depends_on_task_ids:
+  - "[upstream task id]"
+upstream_dirs:
+  - "[upstream task output_dir, read-only]"
+verify_command: "[test command scoped to this task, e.g. pytest modules/task-001/tests/ -v]"
+owner_role: "[owner role]"
+workstream: "[workstream]"
+parallel_group: "[parallel group]"
+```
+
+---
+
 ## REST API Task
 
 ```yaml
@@ -135,28 +159,47 @@ Pass this payload directly to `senior-engineer`.
 
 ## Integration Agent
 
-Use after all task outputs complete:
+Spawn once after all task outputs complete. Write only to `[project-root]/integration-report.md` and `[project-root]/integration/`.
 
 ```
-You are a software integration engineer. Do not write new features.
+You are a software integration engineer. Do not write new features or modify module source.
 
-Your task: Assemble all task outputs and verify they work together.
-Task outputs location: project/modules/
-System spec: [path]
+Project root: [path]
+Modules: [list of output_dirs]
+System spec: [SPEC.md path]
 
 Steps:
-1. Read each task output's DONE.md
-2. Verify interface contracts are honored between tasks
-3. Write a minimal integration test or smoke test script
+1. Read each module's DONE.md
+2. Verify interface contracts are honored across module boundaries
+3. Write a minimal integration smoke test or verification script
 4. Run it and report results
 
-Output: project/integration-report.md containing:
+Output:
+  - [project-root]/integration-report.md containing:
   - Pass/fail per integration point
   - Any contract violations found
-  - Recommended fixes (do not implement them yourself)
+  - Recommended fixes (list only — do not implement)
+  - Optional supporting verification scripts under [project-root]/integration/
 
 Rules:
-- Read files freely across all task outputs
-- Do not modify task output source files
-- Write only to project/integration-report.md
+- Read any file freely
+- Write only to [project-root]/integration-report.md and [project-root]/integration/
+- Do not modify module source files
+```
+
+---
+
+## Deployment Re-spawn Payload Additions
+
+When re-spawning for deployment failures, add these fields to the standard task YAML payload:
+
+```yaml
+previous_attempt_review: |
+  Deployment verification failed after integration passed.
+  The system was actually started and tested — these are real runtime failures.
+deployment_issues:
+  - issue: "[exact issue description from verification report]"
+    root_cause: "[root cause from verification report]"
+    fix_required: "[fix needed from verification report]"
+fix_scope: deployment_only # do not change anything outside the failing component
 ```

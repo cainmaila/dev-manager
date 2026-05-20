@@ -1,6 +1,24 @@
 # Review Gates
 
-Phase 4 has two independent review gates after delivery evidence passes.
+Phase 4 has three gates: Gate 1 (delivery evidence), Gate 2 (spec compliance), Gate 3 (code quality).
+
+---
+
+## Gate 1 — Delivery Evidence
+
+Read `DONE.md` and assess:
+
+| Check                       | Pass condition                                                 | Action if fail                          |
+| --------------------------- | -------------------------------------------------------------- | --------------------------------------- |
+| Status = DONE               | Field is exactly `DONE`                                        | Re-spawn with feedback                  |
+| All acceptance criteria met | Verified against TASKS.md                                      | Re-spawn with specific missing criteria |
+| Interface contract honored  | All items marked "honored"                                     | Re-spawn with correction                |
+| No unresolved blockers      | Blockers field is "none" or resolved                           | Resolve blocker first, then re-spawn    |
+| Fresh verification evidence | `## Test Results` names the command actually run and it passed | Re-spawn with verification correction   |
+
+---
+
+## Gate 2 and Gate 3
 
 ---
 
@@ -127,6 +145,16 @@ If Lean mode uses one `REVIEW.md`, it must contain both sections below in this o
 
 ---
 
-## Re-Spawn Rule
+## Re-Spawn Payload Additions
 
-If either review says `CHANGES_REQUIRED`, copy the relevant review excerpts into the next implementation payload under `previous_attempt_review`, `issues_found`, and `fix_required`.
+When re-spawning, prepend to the YAML args passed to `senior-engineer`:
+
+```yaml
+# prepend these fields to the existing YAML payload:
+previous_attempt_review: |
+  [paste relevant DONE.md, SPEC_REVIEW.md, QUALITY_REVIEW.md, or REVIEW.md section]
+issues_found:
+  - "[specific failure]"
+fix_required:
+  - "[specific correction — do not change anything outside assigned tasks]"
+```

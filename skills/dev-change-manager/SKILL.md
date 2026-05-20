@@ -25,14 +25,14 @@ All state is file-based. Distinguish two error classes before starting:
 
 **Class B — Artifacts missing:** Project root is known but one or more artifacts are absent.
 
-| Artifact            | Location             | If missing                                                          |
-| ------------------- | -------------------- | ------------------------------------------------------------------- |
-| `requirements.md`    | User-provided path   | Ask user for path — may differ from project root                    |
-| `SPEC.md`            | Project root         | Fatal — cannot proceed                                              |
-| `TASKS.md`           | Project root         | Fatal — cannot proceed                                              |
-| `EXECUTION_PLAN.md`  | Project root         | Fatal — cannot proceed                                              |
-| `modules/*/DONE.md`  | Each task output dir | Fatal — pipeline not complete; use `dev-manager` to finish it first |
-| `MANAGER_STATE.md`   | Project root         | Non-fatal — if absent, skip state updates; if present, update it throughout Phase 4 |
+| Artifact            | Location             | If missing                                                                          |
+| ------------------- | -------------------- | ----------------------------------------------------------------------------------- |
+| `requirements.md`   | User-provided path   | Ask user for path — may differ from project root                                    |
+| `SPEC.md`           | Project root         | Fatal — cannot proceed                                                              |
+| `TASKS.md`          | Project root         | Fatal — cannot proceed                                                              |
+| `EXECUTION_PLAN.md` | Project root         | Fatal — cannot proceed                                                              |
+| `modules/*/DONE.md` | Each task output dir | Fatal — pipeline not complete; use `dev-manager` to finish it first                 |
+| `MANAGER_STATE.md`  | Project root         | Non-fatal — if absent, skip state updates; if present, update it throughout Phase 4 |
 
 If any DONE.md is missing, stop and tell the user: "Pipeline is not complete — task `[task_id]` has no DONE.md. Re-run `dev-manager` to finish the pipeline before applying a change request."
 
@@ -121,47 +121,7 @@ Do not proceed without user confirmation.
 
 **Trigger:** CHANGE-IMPACT-[CR-id].md confirmed by user.
 
-### 3A — Update requirements.md
-
-Append changed sections. Mark changes with `<!-- CHANGE-REQUEST-[CR-id]: [YYYY-MM-DD] -->`.
-
-### 3B — Update SPEC.md and TASKS.md
-
-- **Small:** skip SPEC.md. Patch TASKS.md per 3C below.
-- **Medium:** append to relevant SPEC.md sections only. Patch TASKS.md per 3C below.
-- **Large:** re-invoke `dev-task-planner` with updated `requirements.md`. The planner fully regenerates `SPEC.md`, `TASKS.md`, and `TODO.md`. Skip 3C entirely — the planner owns those outputs.
-
-```
-Skill: dev-task-planner
-Input: path to updated requirements.md
-Goal: Regenerated SPEC.md, TASKS.md, TODO.md
-```
-
-### 3C — Patch TASKS.md (Small and Medium only)
-
-- New tasks: append with next available ID
-- Modified tasks: mark old as `[SUPERSEDED by TASK-NNN]`, add new task with new ID
-- Removed tasks: mark as `[REMOVED by CR-[id]]` — do not delete rows
-
-`TASKS.md` is the historical record, so superseded task entries remain there. `EXECUTION_PLAN.md` is the active execution graph, so superseded or removed tasks must not remain as active execution rows.
-
-### 3D — Update EXECUTION_PLAN.md
-
-**Small / Medium:** patch in place.
-
-- Add rows for new tasks
-- Replace modified task rows with the new active task rows
-- Preserve all unchanged task rows
-- Remove superseded or removed task rows from the active execution plan so scheduling uses only current tasks
-
-**Large:** re-derive from scratch using the new `TASKS.md`, following the same rules as `dev-manager` Phase 2.5:
-
-1. Create exactly one execution row per task
-2. Assign `task_id`, `output_dir`, `parallel_group`, `depends_on_task_ids`, `upstream_dirs`, `interface_contract`, `owner_role`, and `workstream` for each row
-3. Build dependency graph from `depends_on` fields
-4. Overwrite `EXECUTION_PLAN.md` completely — do not carry forward any rows from the previous version
-
-The previous `EXECUTION_PLAN.md` may have stale `parallel_group`, `depends_on`, or task boundaries after a Large change. It must not be used as a base.
+Update `requirements.md`, `SPEC.md`, `TASKS.md`, and `EXECUTION_PLAN.md` per classification (Small/Medium/Large). See `references/artifact-update-rules.md` for the full update procedure (3A–3D).
 
 **Phase 3 completion condition:** All artifact updates confirmed on disk.
 
@@ -171,33 +131,7 @@ The previous `EXECUTION_PLAN.md` may have stale `parallel_group`, `depends_on`, 
 
 **Trigger:** Updated artifacts confirmed on disk.
 
-Spawn `senior-engineer` sub-agents for each task in the `CHANGE-IMPACT-[CR-id].md` "Tasks to Re-spawn" list. Use the same payload pattern as `dev-manager` Phase 3, but add `change_context` to the YAML payload:
-
-```yaml
-task_id: [task_id]
-title: "[task title]"
-acceptance_criteria:
-  - "[from updated TASKS.md]"
-output_dir: "[task output dir]"
-spec_path: "[path to SPEC.md]"
-interface_contract:
-  - "[updated contract items]"
-depends_on_task_ids:
-  - "[upstream task ids]"
-upstream_dirs:
-  - "[upstream dirs — include re-spawned upstream tasks]"
-verify_command: "[test command for this task]"
-owner_role: "[owner role]"
-workstream: "[workstream]"
-parallel_group: "[parallel group]"
-change_context:
-  change_request_id: "[CR-id]"
-  change_summary: "[one-line change description]"
-  changed_tasks:
-    - "[task id]: [what changed]"
-  unchanged_outputs_to_preserve:
-    - "[files or behaviors that must not change]"
-```
+Spawn `senior-engineer` sub-agents for each task in the `CHANGE-IMPACT-[CR-id].md` "Tasks to Re-spawn" list. Use the same payload pattern as `dev-manager` Phase 3, with `change_context` added. See `references/spawn-payload.md` for the full template.
 
 ### Spawn Order
 
@@ -222,15 +156,7 @@ Loop until all re-spawned tasks have `DONE.md` Status = DONE.
 
 ### MANAGER_STATE.md Updates in Phase 4
 
-If `MANAGER_STATE.md` exists in the project root (from the original `dev-manager` run), update it for each re-spawned task during this supervision loop. Note: this skill runs Gate 1 (delivery evidence) only — it does not run independent Gate 2 (spec review) or Gate 3 (quality review) sub-agents. Update the state accordingly:
-
-- Before spawning each re-spawned task: reset its gate columns to `—`, set `Accepted: no`, increment `Attempts`, append `[task_id] attempt N: initial spawn (change request [CR-id])` to `## Attempt Log`, update `Next Action`
-- After the agent returns (before reading DONE.md): set `Spawned: yes`, set `Gate1: pending`, update `Next Action`
-- After Gate 1 passes: set `Gate1: pass`; leave `Gate2` and `Gate3` as `—` (not run in this skill); set `Accepted: yes`, update `Next Action`
-- On Gate 1 failure / re-spawn: increment `Attempts`, append to `## Attempt Log` with root cause, reset `Gate1: —`, update `Next Action`
-- After all re-spawned tasks are accepted, update `Next Action` to `Enter Phase 5 Re-integration (change request [CR-id])`
-
-This keeps `MANAGER_STATE.md` accurate so that if `dev-manager` is re-invoked after a change request, it does not resume from stale pre-CR state.
+Update `MANAGER_STATE.md` throughout Phase 4 per `references/state-update-rules.md`.
 
 ---
 
@@ -242,18 +168,7 @@ Always re-run integration — even if only one task changed.
 
 Spawn the integration agent from `dev-manager` Phase 5 with the updated task output directory list.
 
-If integration fails on a **preserved task** (one that was not re-spawned):
-
-- That task now needs re-spawning due to upstream contract drift
-- Add it to the re-spawn list with:
-
-```yaml
-change_context:
-  change_request_id: "[CR-id]"
-  change_summary: "Integration failure due to upstream contract change from CR-[id]"
-  changed_tasks: []
-  unchanged_outputs_to_preserve: []
-```
+If integration fails on a **preserved task** (one that was not re-spawned), it needs re-spawning due to upstream contract drift. Use the integration-failure `change_context` template from `references/spawn-payload.md`.
 
 Loop until `integration-report.md` shows all integration points passing.
 
@@ -282,16 +197,7 @@ Apply same verdict handling:
 
 ## Completion Report
 
-Only after `deployment-verifier` returns ✅ PASS:
-
-```
-Change Request: CR-[id]
-Status: COMPLETE
-Changed: [summary of what changed]
-Tasks re-spawned: [list]
-Tasks preserved: [list]
-Verification: PASS — system started and smoke tests passed
-```
+Write completion report per `references/completion-template.md`.
 
 ---
 
