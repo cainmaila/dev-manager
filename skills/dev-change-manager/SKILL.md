@@ -1,6 +1,6 @@
 ---
 name: dev-change-manager
-description: Applies change requests to completed dev-manager projects — impact analysis, minimal re-entry, targeted re-spawn only. Requires all tasks to have DONE.md; use dev-manager for incomplete pipelines. Triggers: "modify requirements", "add feature to existing project", "requirements changed", "change request", "modify existing system".
+description: Applies change requests to dev-manager projects: impact analysis and targeted re-spawn. Triggers: modify requirements, add feature to existing project, requirements changed, change request.
 argument-hint: <project root path> <brief change description>
 user-invocable: true
 ---

@@ -1,6 +1,6 @@
 ---
 name: dev-task-planner
-description: Converts a requirements document into parallelizable implementation tasks via structured technical interview. Triggers: "break down requirements into tasks", "generate dev tasks from spec", "decompose requirements into tasks".
+description: Breaks requirements into parallelizable tasks via structured technical interview. Triggers: break down requirements into tasks, generate dev tasks from spec, decompose requirements into tasks.
 ---
 
 # Dev Task Planner
